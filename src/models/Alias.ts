@@ -10,6 +10,7 @@ export interface IAliasDocument extends Document {
   isActive: boolean;
   useCount: number;
   qrCodeUrl?: string;
+  notificationSent: boolean;
   createdAt: Date;
   updatedAt: Date;
   lastUsedAt?: Date;
@@ -33,7 +34,7 @@ const AliasSchema = new Schema<IAliasDocument>(
       unique: true,
       trim: true,
       minlength: 6,
-      maxlength: 12,
+      maxlength: 16,
       match: /^[a-zA-Z0-9]+$/,
       index: true,
     },
@@ -89,6 +90,10 @@ const AliasSchema = new Schema<IAliasDocument>(
     qrCodeUrl: {
       type: String,
       trim: true,
+    },
+    notificationSent: {
+      type: Boolean,
+      default: false,
     },
     lastUsedAt: {
       type: Date,
