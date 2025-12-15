@@ -275,7 +275,7 @@ export function registerNotificationProcessors(): void {
   queueService.registerProcessor(
     QueueNames.NOTIFICATION_DELIVERY,
     JobNames.SEND_EXPIRY_NOTIFICATION,
-    processNotification,
+    processNotification as any,
     5 // Process up to 5 notifications concurrently
   );
 
@@ -283,7 +283,7 @@ export function registerNotificationProcessors(): void {
   queueService.registerProcessor(
     QueueNames.NOTIFICATION_DELIVERY,
     JobNames.PROCESS_BULK_NOTIFICATIONS,
-    processBulkNotifications,
+    processBulkNotifications as any,
     1 // Process one bulk job at a time
   );
 
