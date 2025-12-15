@@ -2,6 +2,7 @@ import { logger } from '@/utils/logger';
 import { queueService, QueueNames } from '@/services/queueService';
 import { registerAliasExpirationProcessor, scheduleAliasExpirationJob } from './aliasExpirationJob';
 import { registerNotificationProcessors, scheduleExpiryWarningJob } from './notificationJob';
+import { registerQRCleanupProcessor, scheduleQRCleanupJob } from './qrCleanupJob';
 
 export class JobManager {
   private isInitialized = false;
@@ -47,6 +48,9 @@ export class JobManager {
     // Register notification processors
     registerNotificationProcessors();
 
+    // Register QR cleanup processor
+    registerQRCleanupProcessor();
+
     logger.info('All job processors registered');
   }
 
@@ -62,6 +66,9 @@ export class JobManager {
 
       // Schedule expiry warning notifications (daily at 9 AM UTC)
       await scheduleExpiryWarningJob();
+
+      // Schedule QR code cleanup job (daily at 3 AM UTC)
+      await scheduleQRCleanupJob();
 
       logger.info('All recurring jobs scheduled');
     } catch (error) {
@@ -138,7 +145,10 @@ export class JobManager {
       });
 
       const results = await Promise.all(statusPromises);
-      return results.reduce((acc, result) => ({ ...acc, ...result }), {});
+      return results.reduce(
+        (acc: Record<string, any>, result: Record<string, any>) => ({ ...acc, ...result }),
+        {} as Record<string, any>
+      );
     } catch (error) {
       logger.error('Failed to get job manager status:', error);
       return { error: 'Failed to get status' };
