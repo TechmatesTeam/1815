@@ -1,6 +1,7 @@
 import Queue, { Job, JobOptions, QueueOptions } from 'bull';
 import { config } from '@/config/environment';
 import { logger } from '@/utils/logger';
+import { jobFailureService } from '@/services/jobFailureService';
 
 export interface JobData {
   [key: string]: any;
@@ -26,7 +27,6 @@ export class QueueService {
         port: parseInt(new URL(config.redis.url).port) || 6379,
         password: new URL(config.redis.url).password || undefined,
         maxRetriesPerRequest: config.redis.options.maxRetriesPerRequest,
-        retryDelayOnFailover: config.redis.options.retryDelayOnFailover,
       },
       defaultJobOptions: {
         removeOnComplete: 10, // Keep last 10 completed jobs
@@ -70,6 +70,10 @@ export class QueueService {
 
       queue.on('failed', (job, error) => {
         logger.error(`Job ${job.id} failed in queue ${name}:`, error);
+        // Log failure for alerting and monitoring
+        jobFailureService.logJobFailure(job, error).catch(alertError => {
+          logger.error('Failed to log job failure for alerting:', alertError);
+        });
       });
 
       queue.on('stalled', job => {
