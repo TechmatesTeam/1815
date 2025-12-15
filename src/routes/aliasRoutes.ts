@@ -1,53 +1,64 @@
 import { Router } from 'express';
-// Controllers will be implemented in later tasks
-// import { AliasController } from '@/controllers/AliasController';
+import { AliasController } from '@/controllers/AliasController';
+import {
+  validateRequest,
+  validationSchemas,
+  securityValidation,
+  requestId,
+} from '@/middlewares/validation';
+import { asyncHandler } from '@/middlewares/errorHandler';
 
 const router = Router();
 
-// Placeholder routes - controllers will be implemented in later tasks
-router.post('/', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Alias creation endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Apply request ID middleware to all routes
+router.use(requestId);
 
-router.get('/:code', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Alias details endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Apply security validation to all routes
+router.use(securityValidation);
 
-router.delete('/:code', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Alias deletion endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Generate alias preview (new two-step process)
+router.post(
+  '/preview',
+  validateRequest(validationSchemas.createAlias, 'body'),
+  asyncHandler(AliasController.previewAlias)
+);
+
+// Confirm and save alias (new two-step process)
+router.post(
+  '/confirm',
+  validateRequest(validationSchemas.confirmAlias, 'body'),
+  asyncHandler(AliasController.confirmAlias)
+);
+
+// Create alias (legacy - direct creation)
+router.post(
+  '/',
+  validateRequest(validationSchemas.createAlias, 'body'),
+  asyncHandler(AliasController.createAlias)
+);
+
+// Get alias details
+router.get(
+  '/:code',
+  validateRequest(validationSchemas.resolveAlias, 'params'),
+  asyncHandler(AliasController.getAliasDetails)
+);
+
+// Delete alias
+router.delete(
+  '/:code',
+  validateRequest(validationSchemas.resolveAlias, 'params'),
+  asyncHandler(AliasController.deleteAlias)
+);
+
+// Get existing alias by address (for existing alias display)
+router.get(
+  '/by-address/:address',
+  validateRequest(validationSchemas.getExistingAliasByAddress, 'params'),
+  asyncHandler(AliasController.getExistingAliasByAddress)
+);
+
+// Get aliases by address (query parameter)
+router.get('/', asyncHandler(AliasController.getAliasesByAddress));
 
 export { router as aliasRoutes };
