@@ -24,6 +24,7 @@ export async function connectDatabase(): Promise<void> {
     await mongoose.connect(config.mongodb.uri, {
       ...config.mongodb.options,
       bufferCommands: false,
+      serverSelectionTimeoutMS: 3000, // Fail fast for development
     });
 
     logger.info('✅ Connected to MongoDB');
@@ -37,12 +38,6 @@ export async function connectDatabase(): Promise<void> {
 
     mongoose.connection.on('disconnected', () => {
       logger.warn('MongoDB disconnected');
-      if (!isConnecting && connectionRetries < MAX_RETRIES) {
-        setTimeout(() => {
-          logger.info('Attempting to reconnect to MongoDB...');
-          connectDatabase();
-        }, RETRY_DELAY);
-      }
     });
 
     mongoose.connection.on('reconnected', () => {
@@ -57,10 +52,15 @@ export async function connectDatabase(): Promise<void> {
     isConnecting = false;
     connectionRetries++;
 
-    logger.error(
-      `Failed to connect to MongoDB (attempt ${connectionRetries}/${MAX_RETRIES}):`,
-      error
+    logger.warn(
+      `Failed to connect to MongoDB (attempt ${connectionRetries}/${MAX_RETRIES}): ${error instanceof Error ? error.message : 'Unknown error'}`
     );
+
+    // Don't retry in development mode, just continue without database
+    if (config.nodeEnv === 'development') {
+      logger.warn('Running in development mode without database');
+      return;
+    }
 
     if (connectionRetries < MAX_RETRIES) {
       logger.info(`Retrying connection in ${RETRY_DELAY / 1000} seconds...`);

@@ -25,7 +25,7 @@ export async function connectRedis(): Promise<void> {
     const redisOptions: RedisClientOptions = {
       url: config.redis.url,
       socket: {
-        connectTimeout: 10000, // 10 seconds
+        connectTimeout: 3000, // 3 seconds for fast fail in development
         reconnectStrategy: retries => {
           if (retries > maxRetries) {
             logger.error(`Redis max retries (${maxRetries}) exceeded`);
@@ -67,7 +67,16 @@ export async function connectRedis(): Promise<void> {
     await redisClient.connect();
   } catch (error) {
     isConnecting = false;
-    logger.error('Failed to connect to Redis:', error);
+    logger.warn(
+      `Failed to connect to Redis: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+
+    // Don't throw in development mode, just continue without Redis
+    if (config.nodeEnv === 'development') {
+      logger.warn('Running in development mode without Redis');
+      return;
+    }
+
     throw error;
   }
 }

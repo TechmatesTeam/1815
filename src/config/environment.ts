@@ -7,6 +7,9 @@ dotenv.config();
 interface Config {
   nodeEnv: string;
   port: number;
+  app: {
+    baseUrl: string;
+  };
   mongodb: {
     uri: string;
     options: {
@@ -26,7 +29,7 @@ interface Config {
   blockfrost: {
     apiKey: string;
     baseUrl: string;
-    network: 'mainnet' | 'testnet';
+    network: 'mainnet' | 'testnet' | 'preview' | 'preprod' | 'sanchonet';
   };
   email: {
     useMailhog: boolean;
@@ -91,6 +94,10 @@ export const config: Config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
 
+  app: {
+    baseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
+  },
+
   mongodb: {
     uri: process.env.MONGODB_URI!,
     options: {
@@ -115,7 +122,13 @@ export const config: Config = {
   blockfrost: {
     apiKey: process.env.BLOCKFROST_API_KEY!,
     baseUrl: process.env.BLOCKFROST_BASE_URL || 'https://cardano-mainnet.blockfrost.io/api/v0',
-    network: (process.env.BLOCKFROST_NETWORK as 'mainnet' | 'testnet') || 'mainnet',
+    network:
+      (process.env.BLOCKFROST_NETWORK as
+        | 'mainnet'
+        | 'testnet'
+        | 'preview'
+        | 'preprod'
+        | 'sanchonet') || 'mainnet',
   },
 
   email: {
@@ -157,6 +170,7 @@ export const config: Config = {
     origin: process.env.CORS_ORIGIN?.split(',') || [
       'http://localhost:3000',
       'http://localhost:5173',
+      'http://localhost:5174',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
