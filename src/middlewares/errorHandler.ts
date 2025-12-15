@@ -51,6 +51,18 @@ export function errorHandler(
     statusCode = 401;
     errorCode = 'TOKEN_EXPIRED';
     message = 'Authentication token has expired';
+  } else if ((error as any).isCircuitBreakerOpen) {
+    statusCode = 503;
+    errorCode = 'SERVICE_UNAVAILABLE';
+    message = 'External service is temporarily unavailable due to repeated failures';
+  } else if ((error as any).isGracefulDegradation) {
+    // Handle graceful degradation errors
+    const fallbackResponse = (error as any).fallbackResponse;
+    if (fallbackResponse && fallbackResponse.error) {
+      statusCode = 503;
+      errorCode = fallbackResponse.error.code;
+      message = fallbackResponse.error.message;
+    }
   }
 
   // Don't expose internal errors in production
