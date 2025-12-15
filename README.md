@@ -78,9 +78,28 @@ When running with Docker, the following services are available:
 
 - **API**: http://localhost:3000 - Main API server
 - **MongoDB**: localhost:27017 - Database
+- **MongoDB Express**: http://localhost:8082 - MongoDB web viewer
+  - Username: `admin`
+  - Password: `admin123`
 - **Redis**: localhost:6379 - Cache and queue storage
 - **Redis Commander**: http://localhost:8081 - Redis web UI
+  - Username: `admin`
+  - Password: `admin123`
 - **MailHog**: http://localhost:8025 - Email testing web UI (SMTP: localhost:1025)
+
+#### MongoDB Schema Viewer
+
+MongoDB Express is included for database inspection and management:
+
+- **URL**: http://localhost:8082
+- **Username**: `admin`
+- **Password**: `admin123`
+- **Features**:
+  - View all collections (aliases, users, searchhistories, etc.)
+  - Browse documents and their structure
+  - Execute MongoDB queries
+  - Monitor database statistics
+  - Export/import data
 
 #### Email Testing with MailHog
 
@@ -90,6 +109,20 @@ MailHog is included for local email testing. When `USE_MAILHOG=true` in your `.e
 - View captured emails at http://localhost:8025
 - No actual emails are sent to real email addresses
 - Perfect for testing notification features during development
+
+#### Alias Generation System
+
+The application generates **16-digit unique numeric codes** as aliases:
+
+- **Format**: 16-digit numbers (e.g., `1734271234567890`)
+- **Uniqueness**: Timestamp-based generation ensures no duplicates
+- **Structure**: 13-digit timestamp + 3 random digits
+- **Validation**: Cardano addresses are validated before alias creation
+- **Supported Addresses**:
+  - Shelley mainnet: `addr1...`
+  - Shelley testnet: `addr_test1...`
+  - Stake addresses: `stake1...` / `stake_test1...`
+  - Byron legacy: `Ae2...` / `DdzFF...`
 
 ## Available Scripts
 
