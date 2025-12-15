@@ -46,6 +46,33 @@ export class CacheService {
   }
 
   /**
+   * Set a value in cache only if it doesn't exist (atomic operation)
+   * Returns true if the value was set, false if key already existed
+   */
+  async setIfNotExists(key: string, value: any, options: CacheOptions = {}): Promise<boolean> {
+    try {
+      const cacheKey = this.generateKey(key, options.prefix);
+      const ttl = options.ttl || this.defaultTTL;
+      const serializedValue = JSON.stringify(value);
+
+      // Use SET with NX (only set if not exists) and EX (set expiry)
+      const result = await this.getClient().set(cacheKey, serializedValue, 'EX', ttl, 'NX');
+
+      const wasSet = result === 'OK';
+      if (wasSet) {
+        logger.debug(`Cache SET_IF_NOT_EXISTS: ${cacheKey} (TTL: ${ttl}s) - SUCCESS`);
+      } else {
+        logger.debug(`Cache SET_IF_NOT_EXISTS: ${cacheKey} - KEY_EXISTS`);
+      }
+
+      return wasSet;
+    } catch (error) {
+      logger.error('Cache SET_IF_NOT_EXISTS error:', error);
+      return false;
+    }
+  }
+
+  /**
    * Get a value from cache
    */
   async get<T>(key: string, options: CacheOptions = {}): Promise<T | null> {
