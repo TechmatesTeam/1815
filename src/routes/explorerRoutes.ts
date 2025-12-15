@@ -1,68 +1,34 @@
 import { Router } from 'express';
-// Controllers will be implemented in later tasks
-// import { ExplorerController } from '@/controllers/ExplorerController';
+import { ExplorerController } from '@/controllers/ExplorerController';
+import {
+  validateRequest,
+  validationSchemas,
+  securityValidation,
+  requestId,
+} from '@/middlewares/validation';
+import { asyncHandler } from '@/middlewares/errorHandler';
 
 const router = Router();
 
-// Placeholder routes - controllers will be implemented in later tasks
-router.get('/address/:address', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Address lookup endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Apply request ID middleware to all routes
+router.use(requestId);
 
-router.get('/transaction/:hash', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Transaction lookup endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Apply security validation to all routes
+router.use(securityValidation);
 
-router.get('/block/:id', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Block lookup endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Search endpoint
+router.get('/search', asyncHandler(ExplorerController.search));
 
-router.post('/resolve/bulk', (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Bulk resolution endpoint not yet implemented',
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      requestId: res.locals.requestId,
-      version: process.env.npm_package_version || '1.0.0',
-    },
-  });
-});
+// Address details
+router.get('/address/:address', asyncHandler(ExplorerController.getAddressDetails));
+
+// Transaction details
+router.get('/transaction/:hash', asyncHandler(ExplorerController.getTransactionDetails));
+
+// Block details
+router.get('/block/:id', asyncHandler(ExplorerController.getBlockDetails));
+
+// Bulk resolve
+router.post('/resolve/bulk', asyncHandler(ExplorerController.bulkResolve));
 
 export { router as explorerRoutes };
