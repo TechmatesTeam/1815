@@ -4,6 +4,7 @@ import { explorerRoutes } from './explorerRoutes';
 import { notificationRoutes } from './notificationRoutes';
 import { healthRoutes } from './healthRoutes';
 import { webViewerRoutes } from './webViewerRoutes';
+import { featuresRoutes } from './featuresRoutes';
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use('/explorer', explorerRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/health', healthRoutes);
 router.use('/web-viewer', webViewerRoutes);
+router.use('/features', featuresRoutes);
 
 // Add resolve route at the top level for clean URLs
 router.get('/resolve/:query', (req, res, next) => {
