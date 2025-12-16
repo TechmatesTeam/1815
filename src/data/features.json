@@ -1,0 +1,153 @@
+{
+    "currentVersion": "1.0.0",
+    "features": [
+        {
+            "id": "instant-resolution",
+            "icon": "🔧",
+            "title": "Instant Resolution",
+            "description": "Resolve aliases to full wallet addresses in milliseconds",
+            "bgColor": "bg-yellow-100",
+            "iconBg": "bg-yellow-500",
+            "status": "available",
+            "version": "1.0.0",
+            "actionText": "Try Explorer",
+            "actionLink": "#explorer",
+            "category": "core"
+        },
+        {
+            "id": "alias-explorer",
+            "icon": "🔍",
+            "title": "Alias Explorer",
+            "description": "Search and explore existing aliases on the network",
+            "bgColor": "bg-blue-100",
+            "iconBg": "bg-blue-500",
+            "status": "available",
+            "version": "1.0.0",
+            "actionText": "Try Explorer",
+            "actionLink": "#explorer",
+            "category": "core"
+        },
+        {
+            "id": "create-alias",
+            "icon": "➕",
+            "title": "Create Alias",
+            "description": "Generate your own memorable 16-digit alias",
+            "bgColor": "bg-yellow-100",
+            "iconBg": "bg-yellow-500",
+            "status": "available",
+            "version": "1.0.0",
+            "actionText": "Create Now",
+            "actionLink": "#create",
+            "category": "core"
+        },
+        {
+            "id": "user-accounts",
+            "icon": "👤",
+            "title": "User Signup & Accounts",
+            "description": "Create personal accounts to manage your aliases and preferences",
+            "bgColor": "bg-blue-100",
+            "iconBg": "bg-blue-500",
+            "status": "upcoming",
+            "version": "1.1.0",
+            "category": "account"
+        },
+        {
+            "id": "email-alias",
+            "icon": "📧",
+            "title": "Email Alias Integration",
+            "description": "Link your email address as an alias for easy sharing",
+            "bgColor": "bg-yellow-100",
+            "iconBg": "bg-yellow-500",
+            "status": "upcoming",
+            "version": "1.2.0",
+            "category": "integration"
+        },
+        {
+            "id": "phone-alias",
+            "icon": "📱",
+            "title": "Phone Number Aliases",
+            "description": "Use your phone number as a wallet alias",
+            "bgColor": "bg-blue-100",
+            "iconBg": "bg-blue-500",
+            "status": "upcoming",
+            "version": "1.3.0",
+            "category": "integration"
+        },
+        {
+            "id": "custom-domain",
+            "icon": "🌐",
+            "title": "Custom Domain Aliases",
+            "description": "Create aliases using your own domain name",
+            "bgColor": "bg-yellow-100",
+            "iconBg": "bg-yellow-500",
+            "status": "upcoming",
+            "version": "1.4.0",
+            "category": "advanced"
+        },
+        {
+            "id": "custom-names",
+            "icon": "✏️",
+            "title": "Custom Alias Names",
+            "description": "Choose your own memorable alias names instead of numbers",
+            "bgColor": "bg-blue-100",
+            "iconBg": "bg-blue-500",
+            "status": "upcoming",
+            "version": "1.5.0",
+            "category": "customization"
+        },
+        {
+            "id": "wallet-integration",
+            "icon": "🔗",
+            "title": "Wallet Integration",
+            "description": "Direct integration with popular Cardano wallets",
+            "bgColor": "bg-yellow-100",
+            "iconBg": "bg-yellow-500",
+            "status": "upcoming",
+            "version": "1.6.0",
+            "category": "integration"
+        },
+        {
+            "id": "management-dashboard",
+            "icon": "📊",
+            "title": "Wallet & Alias Management",
+            "description": "Comprehensive dashboard to manage all your wallets and aliases",
+            "bgColor": "bg-blue-100",
+            "iconBg": "bg-blue-500",
+            "status": "upcoming",
+            "version": "1.7.0",
+            "category": "management"
+        },
+        {
+            "id": "hybrid-architecture",
+            "icon": "🔄",
+            "title": "Hybrid On/Off-Chain",
+            "description": "Transition from off-chain to hybrid architecture for enhanced security and decentralization",
+            "bgColor": "bg-purple-100",
+            "iconBg": "bg-purple-500",
+            "status": "upcoming",
+            "version": "2.0.0",
+            "category": "infrastructure"
+        },
+        {
+            "id": "midnight-integration",
+            "icon": "🌙",
+            "title": "Cardano Midnight Integration",
+            "description": "Privacy-focused features using Cardano Midnight for confidential alias operations",
+            "bgColor": "bg-indigo-100",
+            "iconBg": "bg-indigo-500",
+            "status": "upcoming",
+            "version": "3.0.0",
+            "category": "privacy"
+        }
+    ],
+    "categories": {
+        "core": "Core Features",
+        "account": "Account Management",
+        "integration": "Third-party Integration",
+        "advanced": "Advanced Features",
+        "customization": "Customization",
+        "management": "Management Tools",
+        "infrastructure": "Infrastructure",
+        "privacy": "Privacy & Security"
+    }
+}
