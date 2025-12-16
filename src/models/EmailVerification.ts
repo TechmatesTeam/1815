@@ -18,6 +18,13 @@ export interface IEmailVerificationDocument extends Document {
   updatedAt: Date;
 }
 
+export interface IEmailVerificationModel extends mongoose.Model<IEmailVerificationDocument> {
+  findByToken(
+    token: string
+  ): mongoose.Query<IEmailVerificationDocument | null, IEmailVerificationDocument>;
+  cleanupExpired(): mongoose.Query<any, IEmailVerificationDocument>;
+}
+
 const EmailVerificationSchema = new Schema<IEmailVerificationDocument>(
   {
     email: {
@@ -120,7 +127,7 @@ EmailVerificationSchema.statics.cleanupExpired = function () {
   });
 };
 
-export const EmailVerification = mongoose.model<IEmailVerificationDocument>(
-  'EmailVerification',
-  EmailVerificationSchema
-);
+export const EmailVerification = mongoose.model<
+  IEmailVerificationDocument,
+  IEmailVerificationModel
+>('EmailVerification', EmailVerificationSchema);

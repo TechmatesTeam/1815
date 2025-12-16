@@ -31,6 +31,7 @@ export interface ResolveAliasResponse {
   expiresAt: string;
   useCount: number;
   lastUsedAt?: string;
+  createdAt?: string;
 }
 
 export interface AliasPreviewRequest {

@@ -63,9 +63,12 @@ export class ExplorerController {
           const result = {
             type: 'alias' as const,
             data: {
-              // Alias-specific fields
+              // Include ALL formatted blockchain data first
+              ...formattedAddressData,
+              // Then override with alias-specific fields
               alias: query.trim(),
               resolvedAddress: aliasResult.cardanoAddress,
+              address: aliasResult.cardanoAddress,
               customName: aliasResult.customName,
               expiresAt: aliasResult.expiresAt,
               useCount: aliasResult.useCount,
@@ -75,12 +78,6 @@ export class ExplorerController {
               expiryDate: aliasResult.expiresAt
                 ? new Date(aliasResult.expiresAt).toLocaleDateString()
                 : 'Unknown',
-              // Include ALL formatted blockchain data
-              ...formattedAddressData,
-              // Ensure alias-specific fields override any conflicts
-              alias: query.trim(),
-              resolvedAddress: aliasResult.cardanoAddress,
-              address: aliasResult.cardanoAddress,
             },
             cached: addressSearchResult.cached,
             responseTime: addressSearchResult.responseTime,

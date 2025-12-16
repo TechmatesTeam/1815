@@ -15,6 +15,12 @@ export interface INewsletterSubscriptionDocument extends Document {
   updatedAt: Date;
 }
 
+export interface INewsletterSubscriptionModel extends mongoose.Model<INewsletterSubscriptionDocument> {
+  findByUnsubscribeToken(
+    token: string
+  ): mongoose.Query<INewsletterSubscriptionDocument | null, INewsletterSubscriptionDocument>;
+}
+
 const NewsletterSubscriptionSchema = new Schema<INewsletterSubscriptionDocument>(
   {
     email: {
@@ -102,7 +108,7 @@ NewsletterSubscriptionSchema.statics.findByUnsubscribeToken = function (token: s
   });
 };
 
-export const NewsletterSubscription = mongoose.model<INewsletterSubscriptionDocument>(
-  'NewsletterSubscription',
-  NewsletterSubscriptionSchema
-);
+export const NewsletterSubscription = mongoose.model<
+  INewsletterSubscriptionDocument,
+  INewsletterSubscriptionModel
+>('NewsletterSubscription', NewsletterSubscriptionSchema);
