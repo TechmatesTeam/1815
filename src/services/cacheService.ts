@@ -261,6 +261,7 @@ export const CacheKeys = {
   RATE_LIMIT: 'rate_limit',
   NOTIFICATION: 'notification',
   BLOCKFROST: 'blockfrost',
+  FEATURES: 'features',
 } as const;
 
 // TTL constants (in seconds)
