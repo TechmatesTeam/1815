@@ -151,6 +151,124 @@ class EmailService {
       text,
     });
   }
+
+  async sendVerificationEmail(
+    email: string,
+    verificationUrl: string,
+    subscriptionType: 'newsletter' | 'feature_notification',
+    additionalData?: any
+  ): Promise<void> {
+    let subject: string;
+    let html: string;
+    let text: string;
+
+    if (subscriptionType === 'newsletter') {
+      subject = 'Verify your newsletter subscription - CardanoResolve';
+      html = this.generateNewsletterVerificationHTML(verificationUrl, additionalData);
+      text = `Please verify your newsletter subscription by clicking this link: ${verificationUrl}`;
+    } else {
+      subject = `Verify your notification subscription for ${additionalData?.featureName || 'feature'}`;
+      html = this.generateFeatureNotificationVerificationHTML(
+        verificationUrl,
+        additionalData?.featureName
+      );
+      text = `Please verify your feature notification subscription by clicking this link: ${verificationUrl}`;
+    }
+
+    await this.sendEmail({
+      to: email,
+      subject,
+      html,
+      text,
+    });
+  }
+
+  private generateNewsletterVerificationHTML(
+    verificationUrl: string,
+    subscriptionData: any
+  ): string {
+    const subscriptionTypes = [];
+    if (subscriptionData?.featureUpdates) subscriptionTypes.push('Feature updates and releases');
+    if (subscriptionData?.generalNews) subscriptionTypes.push('General ecosystem news');
+
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #2563eb; margin-bottom: 10px;">CardanoResolve</h1>
+          <h2 style="color: #1f2937; margin-top: 0;">Verify Your Newsletter Subscription</h2>
+        </div>
+        
+        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+          <p style="margin: 0 0 15px 0;">Thank you for subscribing to our newsletter!</p>
+          <p style="margin: 0 0 15px 0;">You've requested to receive:</p>
+          <ul style="margin: 0; padding-left: 20px;">
+            ${subscriptionTypes.map(type => `<li>${type}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" 
+             style="background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+            Verify Subscription
+          </a>
+        </div>
+        
+        <div style="background-color: #fef3c7; padding: 15px; border-radius: 6px; margin: 20px 0;">
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            <strong>Important:</strong> This verification link will expire in 24 hours.
+          </p>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+        
+        <p style="color: #6b7280; font-size: 12px; text-align: center;">
+          If you didn't request this subscription, you can safely ignore this email.<br>
+          This verification link will expire automatically.
+        </p>
+      </div>
+    `;
+  }
+
+  private generateFeatureNotificationVerificationHTML(
+    verificationUrl: string,
+    featureName: string
+  ): string {
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #2563eb; margin-bottom: 10px;">CardanoResolve</h1>
+          <h2 style="color: #1f2937; margin-top: 0;">Verify Your Feature Notification</h2>
+        </div>
+        
+        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+          <p style="margin: 0 0 15px 0;">You've requested to be notified when this feature becomes available:</p>
+          <div style="background-color: #e0f2fe; padding: 15px; border-radius: 6px; border-left: 4px solid #0284c7;">
+            <h3 style="margin: 0; color: #0c4a6e;">${featureName}</h3>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" 
+             style="background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+            Verify Notification Request
+          </a>
+        </div>
+        
+        <div style="background-color: #fef3c7; padding: 15px; border-radius: 6px; margin: 20px 0;">
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            <strong>Important:</strong> This verification link will expire in 24 hours.
+          </p>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+        
+        <p style="color: #6b7280; font-size: 12px; text-align: center;">
+          If you didn't request this notification, you can safely ignore this email.<br>
+          This verification link will expire automatically.
+        </p>
+      </div>
+    `;
+  }
 }
 
 export const emailService = new EmailService();
