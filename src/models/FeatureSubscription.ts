@@ -43,6 +43,15 @@ const FeatureSubscriptionSchema = new Schema<IFeatureSubscriptionDocument>(
             'analytics',
             'api_updates',
             'security_alerts',
+            'user-accounts',
+            'advanced-search',
+            'mobile-app',
+            'api-v2',
+            'webhooks',
+            'custom-domains',
+            'team-management',
+            'audit-logs',
+            'backup-restore',
           ];
           return features.every(feature => validFeatures.includes(feature));
         },
