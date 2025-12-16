@@ -9,6 +9,7 @@ services:
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/1815_dev
+      - MONGODB_AVAILABLE=true
       - REDIS_URL=redis://redis:6379
       - REDIS_PASSWORD=redis123
       - MAILHOG_HOST=mailhog
