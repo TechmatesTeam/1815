@@ -141,6 +141,45 @@ export const validationSchemas = {
   unsubscribeBody: Joi.object({
     email: commonSchemas.email.required(),
   }),
+
+  // Newsletter subscription
+  newsletterSubscription: Joi.object({
+    email: commonSchemas.email.required(),
+    featureUpdates: Joi.boolean().default(false),
+    generalNews: Joi.boolean().default(false),
+  }),
+
+  // Feature notification subscription
+  featureNotification: Joi.object({
+    email: commonSchemas.email.required(),
+    featureId: Joi.string().min(1).max(100).required().messages({
+      'string.min': 'Feature ID must not be empty',
+      'string.max': 'Feature ID must not exceed 100 characters',
+      'any.required': 'Feature ID is required',
+    }),
+    featureName: Joi.string().min(1).max(200).optional().messages({
+      'string.min': 'Feature name must not be empty',
+      'string.max': 'Feature name must not exceed 200 characters',
+    }),
+  }),
+
+  // Verification token validation
+  verificationToken: Joi.object({
+    token: Joi.alternatives()
+      .try(
+        // Production tokens: 64-character hex
+        Joi.string()
+          .length(64)
+          .pattern(/^[a-f0-9]{64}$/),
+        // Development mock tokens
+        Joi.string().pattern(/^mock_verification_\d+$/)
+      )
+      .required()
+      .messages({
+        'alternatives.match': 'Verification token must be a valid format',
+        'any.required': 'Verification token is required',
+      }),
+  }),
 };
 
 // Input sanitization function
