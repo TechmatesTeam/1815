@@ -24,6 +24,7 @@ export async function connectRedis(): Promise<void> {
   try {
     const redisOptions: RedisClientOptions = {
       url: config.redis.url,
+      password: process.env.REDIS_PASSWORD || undefined,
       socket: {
         connectTimeout: 3000, // 3 seconds for fast fail in development
         reconnectStrategy: retries => {
