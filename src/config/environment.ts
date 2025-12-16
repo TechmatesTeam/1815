@@ -9,6 +9,7 @@ interface Config {
   port: number;
   app: {
     baseUrl: string;
+    frontendUrl: string;
   };
   mongodb: {
     uri: string;
@@ -96,6 +97,7 @@ export const config: Config = {
 
   app: {
     baseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   },
 
   mongodb: {
