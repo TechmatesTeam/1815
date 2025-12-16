@@ -551,7 +551,7 @@ class NotificationService {
         if (data) {
           history.push({
             type,
-            ...data,
+            ...(data as any),
           });
         }
       }

@@ -41,7 +41,7 @@ app.use(requestLogger);
 app.use('/api/v1', apiRoutes);
 
 // Simple MongoDB viewer route
-app.get('/dbviewer', (req, res) => {
+app.get('/dbviewer', (req: any, res: any) => {
   const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -215,7 +215,7 @@ app.get('/dbviewer', (req, res) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (req: any, res: any) => {
   res.status(200).json({
     success: true,
     data: {
@@ -230,7 +230,7 @@ app.get('/health', (req, res) => {
 app.use(errorHandler);
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use('*', (req: any, res: any) => {
   res.status(404).json({
     success: false,
     error: {

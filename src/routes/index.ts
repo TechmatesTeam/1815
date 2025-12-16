@@ -17,7 +17,7 @@ router.use('/web-viewer', webViewerRoutes);
 router.use('/features', featuresRoutes);
 
 // Add resolve route at the top level for clean URLs
-router.get('/resolve/:query', (req, res, next) => {
+router.get('/resolve/:query', (req: any, res: any, next: any) => {
   // Import here to avoid circular dependency
   const {
     validateRequest,
@@ -39,7 +39,7 @@ router.get('/resolve/:query', (req, res, next) => {
 });
 
 // Add stats route at the top level for clean URLs
-router.get('/stats', (req, res, next) => {
+router.get('/stats', (req: any, res: any, next: any) => {
   // Import here to avoid circular dependency
   const { HealthController } = require('@/controllers/HealthController');
   const { asyncHandler } = require('@/middlewares/errorHandler');
