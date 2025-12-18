@@ -4,6 +4,7 @@
 
 /**
  * Validate if a string is a valid Cardano address
+ * Updated to handle variable-length addresses more flexibly
  */
 export function isValidCardanoAddress(address: string): boolean {
   if (!address || typeof address !== 'string') {
@@ -12,18 +13,23 @@ export function isValidCardanoAddress(address: string): boolean {
 
   const cleanAddress = address.trim();
 
-  // Simple but effective validation patterns
-  // Shelley mainnet addresses: addr1 + 98 bech32 chars (103 total)
-  if (/^addr1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{98}$/.test(cleanAddress)) {
+  // Bech32 character set for Shelley addresses
+  const bech32Chars = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+
+  // Base58 character set for Byron addresses
+  const base58Chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+  // Shelley mainnet addresses: addr1 + variable length bech32 chars (typically 59-103 chars)
+  if (/^addr1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{54,98}$/.test(cleanAddress)) {
     return true;
   }
 
-  // Shelley testnet addresses: addr_test1 + 98 bech32 chars (108 total)
-  if (/^addr_test1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{98}$/.test(cleanAddress)) {
+  // Shelley testnet addresses: addr_test1 + variable length bech32 chars (typically 63-108 chars)
+  if (/^addr_test1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{54,98}$/.test(cleanAddress)) {
     return true;
   }
 
-  // Byron addresses: Ae2 or DdzFF + base58 chars
+  // Byron addresses: Ae2 or DdzFF + base58 chars (variable length 50-104 chars)
   if (
     /^(Ae2|DdzFF)[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{47,101}$/.test(
       cleanAddress
@@ -32,13 +38,13 @@ export function isValidCardanoAddress(address: string): boolean {
     return true;
   }
 
-  // Stake addresses (mainnet): stake1 + 53 bech32 chars (59 total)
-  if (/^stake1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{53}$/.test(cleanAddress)) {
+  // Stake addresses (mainnet): stake1 + bech32 chars (typically 56-59 chars)
+  if (/^stake1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{50,55}$/.test(cleanAddress)) {
     return true;
   }
 
-  // Stake addresses (testnet): stake_test1 + 53 bech32 chars (64 total)
-  if (/^stake_test1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{53}$/.test(cleanAddress)) {
+  // Stake addresses (testnet): stake_test1 + bech32 chars (typically 61-64 chars)
+  if (/^stake_test1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{50,55}$/.test(cleanAddress)) {
     return true;
   }
 

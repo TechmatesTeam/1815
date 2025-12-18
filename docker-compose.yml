@@ -14,6 +14,13 @@ services:
       - REDIS_PASSWORD=redis123
       - MAILHOG_HOST=mailhog
       - MAILHOG_PORT=1025
+      # Blockfrost API configuration
+      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
+      - BLOCKFROST_BASE_URL=${BLOCKFROST_BASE_URL}
+      - BLOCKFROST_NETWORK=${BLOCKFROST_NETWORK}
+      # Other required environment variables
+      - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     depends_on:
       mongodb:
         condition: service_healthy

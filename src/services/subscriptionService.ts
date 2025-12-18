@@ -509,7 +509,7 @@ The CardanoResolve Team`;
    * Send verification email
    */
   private async sendVerificationEmail(verification: any): Promise<void> {
-    const verificationUrl = `http://localhost:5174/verify-subscription/${verification.verificationToken}`;
+    const verificationUrl = `http://localhost:5173/verify-subscription/${verification.verificationToken}`;
 
     let subject: string;
     let html: string;

@@ -447,6 +447,32 @@ export class ExplorerService {
 
       // Handle circuit breaker and service degradation
       if (error instanceof Error) {
+        // Check if this is a 404 "not found" error
+        const isNotFound =
+          error.message.includes('not been found') ||
+          error.message.includes('Not Found') ||
+          (error as any).status_code === 404;
+
+        if (isNotFound) {
+          // Return a proper "not found" response instead of throwing an error
+          logger.info(`Address/transaction/block not found: ${request.query}`);
+          return {
+            type: 'not_found',
+            data: {
+              message:
+                'The requested address, transaction, or block was not found on the blockchain.',
+              query: request.query,
+              suggestions: [
+                'Verify the address format is correct',
+                'Check if the address exists on the correct network (mainnet/testnet)',
+                'For transactions, ensure the hash is complete and accurate',
+              ],
+            },
+            cached: false,
+            responseTime,
+          };
+        }
+
         // Check if this is a circuit breaker error or API failure
         const isCircuitBreakerOpen = (error as any).isCircuitBreakerOpen;
         const isAPIFailure =
