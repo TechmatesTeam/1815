@@ -31,22 +31,39 @@ export const logger = winston.createLogger({
   ],
 });
 
-// Add file transports for production
+// Add file transports for production (try to create logs dir first; fall back to console-only if not possible)
 if (config.nodeEnv === 'production') {
-  logger.add(
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    })
-  );
+  const fs = require('fs');
+  const path = require('path');
+  const logsDir = path.join(process.cwd(), 'logs');
+  let logsDirAvailable = true;
 
-  logger.add(
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    })
-  );
+  try {
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+  } catch (err) {
+    logsDirAvailable = false;
+    // eslint-disable-next-line no-console
+    console.warn('Could not create logs directory; falling back to console-only logging.', err && err.message);
+  }
+
+  if (logsDirAvailable) {
+    logger.add(
+      new winston.transports.File({
+        filename: 'logs/error.log',
+        level: 'error',
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+      })
+    );
+
+    logger.add(
+      new winston.transports.File({
+        filename: 'logs/combined.log',
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+      })
+    );
+  }
 }

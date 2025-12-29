@@ -69,6 +69,9 @@ RUN npm install --only=production --ignore-scripts && npm cache clean --force
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 
+# Create logs directory and set ownership so Winston can write to it
+RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app/logs
+
 # Switch to non-root user
 USER nodejs
 

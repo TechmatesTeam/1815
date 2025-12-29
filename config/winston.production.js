@@ -27,9 +27,47 @@ const productionFormat = winston.format.combine(
 // Create logs directory if it doesn't exist
 const fs = require('fs');
 const logsDir = path.join(__dirname, '../logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
+let logsDirAvailable = true;
+try {
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+} catch (err) {
+  logsDirAvailable = false;
+  // Don't throw here; fall back to console-only logging in environments where we can't create files
+  // (e.g., read-only container filesystem or restricted users).
+  // eslint-disable-next-line no-console
+  console.warn('Could not create logs directory; falling back to console-only logging.', err && err.message);
 }
+
+// Configure transports dynamically so we can fall back if file logging isn't available
+const transports = [];
+if (logsDirAvailable) {
+  // Error logs
+  transports.push(new winston.transports.File({
+    filename: path.join(logsDir, 'error.log'),
+    level: 'error',
+    maxsize: 10485760, // 10MB
+    maxFiles: 5,
+    tailable: true
+  }));
+
+  // Combined logs
+  transports.push(new winston.transports.File({
+    filename: path.join(logsDir, 'combined.log'),
+    maxsize: 10485760, // 10MB
+    maxFiles: 10,
+    tailable: true
+  }));
+}
+
+// Console output for Docker logs (always available)
+transports.push(new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.simple()
+  )
+}));
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -39,25 +77,16 @@ const logger = winston.createLogger({
     environment: process.env.NODE_ENV || 'production',
     version: process.env.npm_package_version || '1.0.0'
   },
-  transports: [
-    // Error logs
+  transports,
+  
+  // Handle uncaught exceptions
+  exceptionHandlers: logsDirAvailable ? [
     new winston.transports.File({
-      filename: path.join(logsDir, 'error.log'),
-      level: 'error',
-      maxsize: 10485760, // 10MB
-      maxFiles: 5,
-      tailable: true
-    }),
-    
-    // Combined logs
-    new winston.transports.File({
-      filename: path.join(logsDir, 'combined.log'),
-      maxsize: 10485760, // 10MB
-      maxFiles: 10,
-      tailable: true
-    }),
-    
-    // Console output for Docker logs
+      filename: path.join(logsDir, 'exceptions.log'),
+      maxsize: 10485760,
+      maxFiles: 3
+    })
+  ] : [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -66,21 +95,19 @@ const logger = winston.createLogger({
     })
   ],
   
-  // Handle uncaught exceptions
-  exceptionHandlers: [
-    new winston.transports.File({
-      filename: path.join(logsDir, 'exceptions.log'),
-      maxsize: 10485760,
-      maxFiles: 3
-    })
-  ],
-  
   // Handle unhandled promise rejections
-  rejectionHandlers: [
+  rejectionHandlers: logsDirAvailable ? [
     new winston.transports.File({
       filename: path.join(logsDir, 'rejections.log'),
       maxsize: 10485760,
       maxFiles: 3
+    })
+  ] : [
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      )
     })
   ]
 });
