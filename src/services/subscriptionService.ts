@@ -509,7 +509,26 @@ The CardanoResolve Team`;
    * Send verification email
    */
   private async sendVerificationEmail(verification: any): Promise<void> {
-    const verificationUrl = `http://localhost:5173/verify-subscription/${verification.verificationToken}`;
+    const frontendBase = (config.app.frontendUrl || 'http://localhost:5173').replace(
+      /\/+$|\s+/g,
+      ''
+    );
+    const verificationUrl = `${frontendBase}/verify-subscription/${verification.verificationToken}`;
+
+    if (config.nodeEnv === 'production' && config.app.frontendUrl.includes('localhost')) {
+      logger.warn(
+        'FRONTEND_URL is set to localhost in production — verification links may point to localhost',
+        {
+          frontendUrl: config.app.frontendUrl,
+        }
+      );
+    }
+
+    logger.info('Generated verification URL for email', {
+      email: verification.email.substring(0, 5) + '***',
+      verificationUrl,
+      subscriptionType: verification.subscriptionType,
+    });
 
     let subject: string;
     let html: string;
