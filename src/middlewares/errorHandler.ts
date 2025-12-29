@@ -76,6 +76,9 @@ export function errorHandler(
       code: errorCode,
       message,
       ...(process.env.NODE_ENV === 'development' && { details: error.stack }),
+      // Surface validation details when available (development only)
+      ...(process.env.NODE_ENV === 'development' &&
+        (error as any).details && { validation: (error as any).details }),
     },
     metadata: {
       timestamp: new Date().toISOString(),
