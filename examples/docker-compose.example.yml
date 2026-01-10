@@ -1,0 +1,57 @@
+# Example Docker Compose Configuration
+# 
+# This file shows how to add MongoDB and Redis to your existing
+# docker-compose.yml if you don't already have them.
+#
+# If you already have MongoDB and Redis, you can skip this and just
+# use your existing services.
+
+version: '3.8'
+
+services:
+  # Your existing application service
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/myapp
+      - REDIS_URL=redis://redis:6379
+      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - app-network
+
+  # MongoDB (only add if you don't have it)
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Redis (only add if you don't have it)
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
