@@ -1,0 +1,73 @@
+# Source files (only ship compiled dist/)
+src/
+!src/lib/
+
+# Tests
+src/test/
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+
+# Development files
+.env
+.env.*
+!.env.template
+
+# Docker files (users should use their own)
+Dockerfile
+docker-compose.yml
+docker-compose.prod.yml
+.dockerignore
+
+# Deployment files
+ecosystem.config.js
+scripts/deploy.sh
+scripts/health-check.sh
+nginx/
+
+# MongoDB tools (not needed in library)
+mongodb-*.js
+mongodb-*.mjs
+check-mongodb.mjs
+verify-mongodb-express.mjs
+sync-mongodb-data.mjs
+mongodb-web-viewer.html
+
+# Documentation for standalone deployment
+DEPLOYMENT.md
+DOCKER_SETUP.md
+MONGODB_TOOLS.md
+
+# Development tools
+.git/
+.github/
+.vscode/
+.idea/
+*.log
+logs/
+
+# Build artifacts
+node_modules/
+dist/index.js
+dist/index.d.ts
+dist/healthcheck.js
+dist/healthcheck.d.ts
+dist/config/winston.production.js
+dist/config/monitoring.js
+
+# Keep only the library entry point
+!dist/lib/
+
+# Examples (users can view on GitHub)
+examples/node_modules/
+
+# Config files
+.eslintrc.js
+.prettierrc
+tsconfig.json
+tsconfig.prod.json
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
